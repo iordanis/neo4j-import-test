@@ -1,34 +1,38 @@
 package com.nextmilestone.importer;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.neo4j.helpers.collection.MapUtil.map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.nextmilestone.importer.repository.OrderRepository;
+import org.springframework.data.neo4j.core.GraphDatabase;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public class SimpleImportingService {
 	private static final Log log = LogFactory.getLog(SimpleImportingService.class);
-	private static OrderRepository orderRepository;
+	private static Neo4jTemplate neo4jTemplate;
 
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-		orderRepository = context.getBean(OrderRepository.class);
+//		GraphDatabaseService graphDatabaseService = context.getBean("graphDatabaseService", GraphDatabaseService.class);
+//		DelegatingGraphDatabase graphDatabase = new DelegatingGraphDatabase(graphDatabaseService);
+		GraphDatabase graphDatabase = context.getBean("graphDatabase", GraphDatabase.class);
+		neo4jTemplate = new Neo4jTemplate(graphDatabase);
+		neo4jTemplate.postConstruct();
+
 		importABunch();
 	}
 
+	@Transactional
 	private static void importABunch() {
-		List<Order> orders = new ArrayList<Order>();
-		for (int i = 0; i < 1000; i++) {
-			Order order = new Order(String.valueOf(i));
-			log.info("Order created: " + i);
-			orders.add(order);
-		}
 		long startOfSave = now();
-		orderRepository.save(orders);
+		for (int i = 0; i < 1000; i++) {
+			neo4jTemplate.createNode(map("id", String.valueOf(i)));
+//			neo4jTemplate.save(new Order(String.valueOf(i)));
+			log.info("Order created: " + i);
+		}
 		log.info("Orders saved after: " + (now() - startOfSave));
 	}
 
