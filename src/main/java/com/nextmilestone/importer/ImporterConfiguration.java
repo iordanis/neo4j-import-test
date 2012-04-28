@@ -10,7 +10,7 @@ public class ImporterConfiguration {
 
 	@Bean
 	@Scope(value="singleton")
-	public SpringRestGraphDatabase graphDatabaseService() {
+	public SpringRestGraphDatabase remoteGraphDatabase() {
 		return new SpringRestGraphDatabase("http://localhost:7474/db/data/");
 	}
 }
