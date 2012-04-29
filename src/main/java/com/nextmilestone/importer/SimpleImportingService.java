@@ -36,18 +36,26 @@ public class SimpleImportingService {
 
 	private static void importABunch() {
 		long startOfSave = now();
+		importWithTransaction();
+		log.info("Orders saved after: " + (now() - startOfSave));
+	}
+
+	private static void importWithTransaction() {
 		Transaction transaction = graphDatabaseService.beginTx();
 		try {
-			for (int i = 0; i < NUMBER_OF_ORDERS; i++) {
-				Node orderNode = createOrderNode(new Order(String.valueOf(i)));
-				List<Node> itemNodes = createItemNodes(generateItemsForOrder(NUMBER_OF_ITEMS_PER_ORDER));
-				relateOrderToItems(orderNode, itemNodes);
-			}
+			importData();
 			transaction.success();
 		} finally {
 			transaction.finish();
 		}
-		log.info("Orders saved after: " + (now() - startOfSave));
+	}
+
+	private static void importData() {
+		for (int i = 0; i < NUMBER_OF_ORDERS; i++) {
+			Node orderNode = createOrderNode(new Order(String.valueOf(i)));
+			List<Node> itemNodes = createItemNodes(generateItemsForOrder(NUMBER_OF_ITEMS_PER_ORDER));
+			relateOrderToItems(orderNode, itemNodes);
+		}
 	}
 
 	private static List<Item> generateItemsForOrder(int numberOfItemsPerOrder) {
