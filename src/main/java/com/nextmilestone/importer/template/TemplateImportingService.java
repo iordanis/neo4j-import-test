@@ -1,4 +1,4 @@
-package com.nextmilestone.importer;
+package com.nextmilestone.importer.template;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +16,8 @@ import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.data.neo4j.support.DelegatingGraphDatabase;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 
-public class SimpleImportingService {
-	private static final Log log = LogFactory.getLog(SimpleImportingService.class);
+public class TemplateImportingService {
+	private static final Log log = LogFactory.getLog(TemplateImportingService.class);
 	private static final int NUMBER_OF_ORDERS = 1000;
 	private static final int NUMBER_OF_ITEMS_PER_ORDER = 10;
 	private static final String CONTAINS = "CONTAINS";
