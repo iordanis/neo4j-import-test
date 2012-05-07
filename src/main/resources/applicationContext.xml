@@ -10,9 +10,9 @@
 
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:component-scan base-package="com.nextmilestone.importer"/>
+    <context:component-scan base-package="com.nextmilestone"/>
 
-    <neo4j:repositories base-package="com.nextmilestone.importer.repository"/>
+    <neo4j:repositories base-package="com.nextmilestone.neo4j.repository"/>
     <neo4j:config storeDirectory="data/graph.db"/>
 <!--     <neo4j:config graphDatabaseService="remoteGraphDatabase"/> -->
     
