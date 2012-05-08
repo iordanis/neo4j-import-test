@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.neo4j.graphdb.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +45,6 @@ public class ImportService {
 			if (!cartId.equals(cart.getId())) {
 				if (StringUtils.isNotBlank(cart.getId())) {
 					persist(cart, products);
-					relate(cart, products);
 				}
 				cart = new Cart(cartId);
 				products.clear();
@@ -60,14 +58,7 @@ public class ImportService {
 		cartRepository.save(cart);
 		for (Product product : products) {
 			productRepository.save(product);
-		}
-	}
-
-	private void relate(Cart cart, List<Product> products) {
-		Node cartNode = cartRepository.getPersistentState(cart);
-		for (Product product : products) {
-			Node productNode = productRepository.getPersistentState(product);
-			relationshipRepository.relateNodes(cartNode, productNode, CONTAINS);
+			relationshipRepository.relate(cart, product, CONTAINS);
 		}
 	}
 }

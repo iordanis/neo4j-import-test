@@ -1,6 +1,5 @@
 package com.nextmilestone.neo4j.repository;
 
-import org.neo4j.graphdb.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Component;
@@ -24,10 +23,4 @@ public class ManagedTransactionCartRepository implements CartRepository {
 		transaction.prepareTransaction();
 		neo4jTemplate.save(cart);
 	}
-
-	@Override
-	public Node getPersistentState(Cart cart) {
-		return neo4jTemplate.getPersistentState(cart);
-	}
-
 }

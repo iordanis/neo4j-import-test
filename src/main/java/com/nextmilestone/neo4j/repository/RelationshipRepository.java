@@ -1,8 +1,9 @@
 package com.nextmilestone.neo4j.repository;
 
-import org.neo4j.graphdb.Node;
+import com.nextmilestone.model.Cart;
+import com.nextmilestone.model.Product;
 
 public interface RelationshipRepository {
 
-	void relateNodes(Node startNode, Node endNode, String relationship);
+	void relate(Cart cart, Product product, String relationship);
 }
