@@ -1,9 +1,5 @@
 package com.nextmilestone.neo4j.importer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +11,6 @@ import com.nextmilestone.neo4j.repository.RelationshipRepository;
 
 @Component
 public class ImportService {
-	private static final String CONTAINS = "CONTAINS";
 
 	private final CsvFileReader fileReader;
 	private final CartRepository cartRepository;
@@ -33,32 +28,19 @@ public class ImportService {
 
 	public void importData() {
 		String[] values;
-		Cart cart = new Cart("");
-		List<Product> products = new ArrayList<Product>(100);
 		int i = 0;
 
 		while ((values = fileReader.attemptToReadNextValues()) != null) {
 			System.out.println("imported: " + i++);
-			String cartId = values[0];
-			String productId = values[1];
-
-			if (!cartId.equals(cart.getId())) {
-				if (StringUtils.isNotBlank(cart.getId())) {
-					persist(cart, products);
-				}
-				cart = new Cart(cartId);
-				products.clear();
-			}
-			Product product = new Product(productId);
-			products.add(product);
+			Cart cart = new Cart(values[0]);
+			Product product = new Product(values[1]);
+			persist(cart, product);
 		}
 	}
 
-	private void persist(Cart cart, List<Product> products) {
+	private void persist(Cart cart, Product product) {
 		cartRepository.save(cart);
-		for (Product product : products) {
-			productRepository.save(product);
-			relationshipRepository.relate(cart, product, CONTAINS);
-		}
+		productRepository.save(product);
+		relationshipRepository.contains(cart, product);
 	}
 }

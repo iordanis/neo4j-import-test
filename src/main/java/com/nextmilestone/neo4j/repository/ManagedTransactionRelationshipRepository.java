@@ -10,6 +10,8 @@ import com.nextmilestone.model.Product;
 
 @Component
 public class ManagedTransactionRelationshipRepository implements RelationshipRepository {
+	private static final String CONTAINS = "CONTAINS";
+
 	private final ManagedTransaction transaction;
 	private final Neo4jTemplate neo4jTemplate;
 
@@ -20,11 +22,11 @@ public class ManagedTransactionRelationshipRepository implements RelationshipRep
 	}
 
 	@Override
-	public void relate(Cart cart, Product product, String relationship) {
+	public void contains(Cart cart, Product product) {
 		Node cartNode = neo4jTemplate.getPersistentState(cart);
 		Node productNode = neo4jTemplate.getPersistentState(product);
 
 		transaction.prepareTransaction();
-		neo4jTemplate.createRelationshipBetween(cartNode, productNode, relationship, null);
+		neo4jTemplate.createRelationshipBetween(cartNode, productNode, CONTAINS, null);
 	}
 }
